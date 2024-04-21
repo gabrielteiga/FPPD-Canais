@@ -30,6 +30,35 @@ type Nodo struct {
 	d *Nodo
 }
 
+// -------- BUSCA SEQUENCIAL ----------
+func busca(r *Nodo, v int) bool {
+	if r != nil {
+		if r.v == v {
+			return true
+		}
+		return busca(r.e, v) || busca(r.d, v)
+	}
+	return false
+}
+
+func buscaConc(r *Nodo, v int) bool {
+	result := make(chan bool)
+	go buscaConcCh(r, v, result)
+	return <-result
+}
+
+func buscaConcCh(r *Nodo, v int, result chan bool) {
+	if r != nil {
+		leftCh := make(chan bool)
+		rightCh := make(chan bool)
+		go buscaConcCh(r.e, v, leftCh)
+		go buscaConcCh(r.d, v, rightCh)
+		result <- (<-leftCh || <-rightCh || r.v == v)
+	} else {
+		result <- false
+	}
+}
+
 func caminhaERD(r *Nodo) {
 	if r != nil {
 		caminhaERD(r.e)
@@ -94,6 +123,8 @@ func main() {
 
 	fmt.Println("Soma: ", soma(root))
 	fmt.Println("SomaConc: ", somaConc(root))
-	fmt.Println()
-
+	fmt.Println("Busca 19: ", busca(root, 19))
+	fmt.Println("Busca 0: ", busca(root, 0))
+	fmt.Println("BuscaConc 19: ", buscaConc(root, 19))
+	fmt.Println("BuscaConc 0: ", buscaConc(root, 0))
 }
