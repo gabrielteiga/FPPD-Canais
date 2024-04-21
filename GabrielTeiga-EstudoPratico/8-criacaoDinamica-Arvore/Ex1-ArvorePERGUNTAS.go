@@ -31,6 +31,7 @@ type Nodo struct {
 	d *Nodo
 }
 
+// -------- RETORNA PARES E IMPARES ----------
 func retornaParImpar(r *Nodo, saidaP chan int, saidaI chan int, fin chan struct{}) {
 	if r != nil {
 		if r.v%2 == 0 {
@@ -40,6 +41,20 @@ func retornaParImpar(r *Nodo, saidaP chan int, saidaI chan int, fin chan struct{
 		}
 		retornaParImpar(r.e, saidaP, saidaI, fin)
 		retornaParImpar(r.d, saidaP, saidaI, fin)
+	} else {
+		fin <- struct{}{}
+	}
+}
+
+func retornaParImparConc(r *Nodo, saidaP chan int, saidaI chan int, fin chan struct{}) {
+	if r != nil {
+		if r.v%2 == 0 {
+			saidaP <- r.v
+		} else {
+			saidaI <- r.v
+		}
+		go retornaParImparConc(r.e, saidaP, saidaI, fin)
+		go retornaParImparConc(r.d, saidaP, saidaI, fin)
 	} else {
 		fin <- struct{}{}
 	}
@@ -145,7 +160,8 @@ func main() {
 	saidaP := make(chan int)
 	saidaI := make(chan int)
 	fin := make(chan struct{})
-	go retornaParImpar(root, saidaP, saidaI, fin)
+	// go retornaParImpar(root, saidaP, saidaI, fin)
+	go retornaParImparConc(root, saidaP, saidaI, fin)
 	go func() {
 		for {
 			select {
