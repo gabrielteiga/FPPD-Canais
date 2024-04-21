@@ -22,12 +22,27 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 type Nodo struct {
 	v int
 	e *Nodo
 	d *Nodo
+}
+
+func retornaParImpar(r *Nodo, saidaP chan int, saidaI chan int, fin chan struct{}) {
+	if r != nil {
+		if r.v%2 == 0 {
+			saidaP <- r.v
+		} else {
+			saidaI <- r.v
+		}
+		retornaParImpar(r.e, saidaP, saidaI, fin)
+		retornaParImpar(r.d, saidaP, saidaI, fin)
+	} else {
+		fin <- struct{}{}
+	}
 }
 
 // -------- BUSCA SEQUENCIAL ----------
@@ -46,7 +61,6 @@ func buscaConc(r *Nodo, v int) bool {
 	go buscaConcCh(r, v, result)
 	return <-result
 }
-
 func buscaConcCh(r *Nodo, v int, result chan bool) {
 	if r != nil {
 		leftCh := make(chan bool)
@@ -127,4 +141,22 @@ func main() {
 	fmt.Println("Busca 0: ", busca(root, 0))
 	fmt.Println("BuscaConc 19: ", buscaConc(root, 19))
 	fmt.Println("BuscaConc 0: ", buscaConc(root, 0))
+
+	saidaP := make(chan int)
+	saidaI := make(chan int)
+	fin := make(chan struct{})
+	go retornaParImpar(root, saidaP, saidaI, fin)
+	go func() {
+		for {
+			select {
+			case v := <-saidaP:
+				fmt.Println("Par: ", v)
+			case v := <-saidaI:
+				fmt.Println("Impar: ", v)
+			case <-fin:
+				fmt.Println("Fim")
+			}
+		}
+	}()
+	time.Sleep(1 * time.Second)
 }
