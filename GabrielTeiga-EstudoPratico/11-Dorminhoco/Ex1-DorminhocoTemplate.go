@@ -22,7 +22,7 @@ type carta string      // carta é um strirng
 
 var ch [NJ]chan carta  // NJ canais de itens tipo carta  
 
-func jogador(id int, in chan carta, out chan carta, cartasIniciais []carta, ... ) {
+func jogador(id int, in chan carta, out chan carta, cartasIniciais []carta) {
 	mao := cartasIniciais    // estado local - as cartas na mao do jogador
 	nroDeCartas := M         // quantas cartas ele tem 
     cartaRecebida := " "     // carta recebida é vazia
@@ -51,7 +51,7 @@ func main() {
 	// cria um baralho com NJ*M cartas
 	for i := 0; i < NJ; i++ {
 		// escolhe aleatoriamente (tira) cartas do baralho, passa cartas para jogador
-		go jogador(i, ch[i], ch[(i+1)%N], cartasEscolhidas , ...) // cria processos conectados circularmente
+		go jogador(i, ch[i], ch[(i+1)%N], cartasEscolhidas) // cria processos conectados circularmente
 	}
 	
 	<-make(chan struct{}) // bloqueia
