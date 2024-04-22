@@ -1,3 +1,6 @@
+// Desenvolvido por: Gabriel Teiga
+// Ultima modificação: 22/04/2024
+//
 // por Fernando Dotti - fldotti.github.io - PUCRS - Escola Politécnica
 // PROBLEMA:
 //   o dorminhoco especificado no arquivo Ex1-ExplanacaoDoDorminhoco.pdf nesta pasta

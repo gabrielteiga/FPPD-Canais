@@ -1,3 +1,6 @@
+// Desenvolvido por: Gabriel Teiga
+// Ultima modificação: 22/04/2024
+//
 // por Fernando Dotti - PUCRS
 // dado abaixo um exemplo de estrutura em arvore, uma arvore inicializada
 // e uma operação de caminhamento, pede-se fazer:
