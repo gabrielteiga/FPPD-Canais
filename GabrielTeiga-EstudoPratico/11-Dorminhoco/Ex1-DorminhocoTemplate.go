@@ -32,13 +32,14 @@ func jogador(id int, in chan carta, out chan carta, bateu chan int, cartasInicia
 	nroDeCartas := M      // quantas cartas ele tem
 
 	if id == 0 {
-		mao = append(mao, carta("Joker"))
+		mao = append(mao, "Joker")
 		nroDeCartas++
 	}
 
 	fmt.Println("Jogador", id, "começa com", mao)
 
 	for {
+		fmt.Printf("Jogador %d tem : %s\n", id, mao)
 		select {
 		case <-bateu:
 			fmt.Printf("Jogador %d bateu\n", id)
